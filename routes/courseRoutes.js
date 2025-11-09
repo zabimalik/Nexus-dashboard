@@ -7,6 +7,7 @@ import {
     deleteCourse,
     testCourseEndpoint
 } from '../controllers/courseController.js';
+import { upload, handleUploadError } from '../confiq/cloudinary.js';
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.get('/test', testCourseEndpoint);
 // @route   POST /api/courses
 // @desc    Create a new course
 // @access  Public
-router.post('/', createCourse);
+router.post('/', upload.single('image'), handleUploadError, createCourse);
 
 // @route   GET /api/courses
 // @desc    Get all courses
@@ -33,7 +34,7 @@ router.get('/:id', getCourseById);
 // @route   PUT /api/courses/:id
 // @desc    Update course
 // @access  Public
-router.put('/:id', updateCourse);
+router.put('/:id', upload.single('image'), handleUploadError, updateCourse);
 
 // @route   DELETE /api/courses/:id
 // @desc    Delete course

@@ -23,13 +23,27 @@ export const createCourse = async (req, res) => {
             });
         }
 
+        // Normalize includes: support comma-separated string or array
+        let normalizedIncludes = [];
+        if (Array.isArray(includes)) {
+            normalizedIncludes = includes;
+        } else if (typeof includes === 'string') {
+            normalizedIncludes = includes
+                .split(',')
+                .map(item => item.trim())
+                .filter(Boolean);
+        }
+
+        // If an image was uploaded via multer-cloudinary, use the resulting URL
+        const imageUrl = req.file?.path || image || '';
+
         const course = new Course({
             name: name.trim(),
             description: description.trim(),
             price: parseFloat(price),
             duration: duration.trim(),
-            includes: includes || [],
-            image: image || ''
+            includes: normalizedIncludes,
+            image: imageUrl
         });
 
         await course.save();
@@ -186,8 +200,22 @@ export const updateCourse = async (req, res) => {
         if (description !== undefined) course.description = description.trim();
         if (price !== undefined) course.price = parseFloat(price);
         if (duration !== undefined) course.duration = duration.trim();
-        if (includes !== undefined) course.includes = includes;
-        if (image !== undefined) course.image = image;
+
+        if (includes !== undefined) {
+            if (Array.isArray(includes)) {
+                course.includes = includes;
+            } else if (typeof includes === 'string') {
+                course.includes = includes
+                    .split(',')
+                    .map(item => item.trim())
+                    .filter(Boolean);
+            }
+        }
+
+        // Prefer uploaded file URL if present
+        const imageUrl = req.file?.path || image;
+        if (imageUrl !== undefined) course.image = imageUrl;
+
         if (isActive !== undefined) course.isActive = isActive;
 
         await course.save();

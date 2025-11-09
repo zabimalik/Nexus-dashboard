@@ -1,0 +1,30 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "seed:courses": "node scripts/seedCourses.js",
+    "seed:fees": "node scripts/seedFeeRecords.js",
+    "test:connection": "node scripts/testSetup.js",
+    "test:courses": "node scripts/testCourseAPI.js",
+    "add:course": "node scripts/addTestCourse.js",
+    "check:db": "node scripts/checkDatabase.js",
+    "fix:courses": "node scripts/fixCourses.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.2"
+  }
+}

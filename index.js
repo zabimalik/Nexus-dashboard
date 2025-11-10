@@ -51,6 +51,7 @@ app.use((req, res, next) => {
 });
 
 // ✅ Routes
+console.log('Registering course routes...');
 app.use('/api/courses', courseRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/teachers', teacherRoutes);
@@ -58,6 +59,7 @@ app.use('/api/certified-students', certifiedStudentRoutes);
 app.use('/api/fees', feeRoutes);
 app.use('/api/salaries', salaryRoutes);
 app.use('/api/budget', budgetRoutes);
+console.log('All routes registered');
 
 // ✅ Root route (for quick testing)
 app.get('/', (req, res) => {

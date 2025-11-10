@@ -1,44 +1,34 @@
 import express from 'express';
 import {
-    createCourse,
-    getAllCourses,
-    getCourseById,
-    updateCourse,
-    deleteCourse,
-    testCourseEndpoint
+  getCourses,
+  getCourseById,
+  createCourse,
+  updateCourse,
+  deleteCourse,
+  uploadCourseImage,
+  deleteCourseImage
 } from '../controllers/courseController.js';
-import { upload, handleUploadError } from '../confiq/cloudinary.js';
+import { upload } from '../confiq/cloudinary.js';
 
 const router = express.Router();
 
-// @route   GET /api/courses/test
-// @desc    Test course API endpoint
-// @access  Public
-router.get('/test', testCourseEndpoint);
+// Debug middleware
+router.use((req, res, next) => {
+  console.log(`[Course Routes] ${req.method} ${req.path}`);
+  next();
+});
 
-// @route   POST /api/courses
-// @desc    Create a new course
-// @access  Public
-router.post('/', upload.single('image'), handleUploadError, createCourse);
-
-// @route   GET /api/courses
-// @desc    Get all courses
-// @access  Public
-router.get('/', getAllCourses);
-
-// @route   GET /api/courses/:id
-// @desc    Get single course by ID
-// @access  Public
+// Public routes
+router.get('/', getCourses);
 router.get('/:id', getCourseById);
 
-// @route   PUT /api/courses/:id
-// @desc    Update course
-// @access  Public
-router.put('/:id', upload.single('image'), handleUploadError, updateCourse);
-
-// @route   DELETE /api/courses/:id
-// @desc    Delete course
-// @access  Public
+// Admin routes (add authentication middleware if needed)
+router.post('/', upload.single('image'), createCourse);
+router.put('/:id', upload.single('image'), updateCourse);
 router.delete('/:id', deleteCourse);
+
+// Image upload routes
+router.post('/upload-image', upload.single('image'), uploadCourseImage);
+router.delete('/delete-image', deleteCourseImage);
 
 export default router;

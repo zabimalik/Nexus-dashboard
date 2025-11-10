@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import multer from 'multer';
+import { Readable } from 'stream';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -10,20 +10,8 @@ cloudinary.config({
   secure: true
 });
 
-// Create storage engine for multer
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: (req, file) => {
-    return {
-      folder: 'afnanecommerce/images',
-      allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-      transformation: [
-        { width: 800, height: 800, crop: 'limit', quality: 'auto' }
-      ],
-      resource_type: 'auto'
-    };
-  }
-});
+// Custom storage engine for Cloudinary
+const storage = multer.memoryStorage();
 
 // File filter for multer
 const fileFilter = (req, file, cb) => {
@@ -36,7 +24,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Create multer instance with the storage engine
+// Create multer instance with memory storage
 const upload = multer({
   storage: storage,
   limits: {
@@ -45,6 +33,32 @@ const upload = multer({
   },
   fileFilter: fileFilter
 });
+
+// Helper function to upload buffer to Cloudinary
+const uploadToCloudinary = (buffer, folder = 'afnanecommerce/images') => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: folder,
+        allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        transformation: [
+          { width: 800, height: 800, crop: 'limit', quality: 'auto' }
+        ],
+        resource_type: 'auto'
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+
+    const readableStream = Readable.from(buffer);
+    readableStream.pipe(uploadStream);
+  });
+};
 
 // Error handling middleware for file uploads
 const handleUploadError = (err, req, res, next) => {
@@ -61,7 +75,7 @@ const handleUploadError = (err, req, res, next) => {
   next();
 };
 
-export { cloudinary, upload, handleUploadError };
+export { cloudinary, upload, uploadToCloudinary, handleUploadError };
 
 // This file configures Cloudinary for image storage and sets up Multer middleware for handling file uploads.
-// It ensures that only image files are uploaded and applies transformations for optimization.
+// It uses memory storage and a custom upload function to work with Cloudinary v2.

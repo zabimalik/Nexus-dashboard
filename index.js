@@ -9,6 +9,7 @@ import certifiedStudentRoutes from './routes/certifiedStudentRoutes.js';
 import feeRoutes from './routes/feeRoutes.js';
 import salaryRoutes from './routes/salaryRoutes.js';
 import budgetRoutes from './routes/budgetRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 
 dotenv.config(); // ✅ safer than just "import 'dotenv/config'"
 
@@ -59,6 +60,7 @@ app.use('/api/certified-students', certifiedStudentRoutes);
 app.use('/api/fees', feeRoutes);
 app.use('/api/salaries', salaryRoutes);
 app.use('/api/budget', budgetRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 console.log('All routes registered');
 
 // ✅ Root route (for quick testing)

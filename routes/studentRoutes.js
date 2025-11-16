@@ -5,7 +5,10 @@ import {
     getStudentById,
     updateStudent,
     deleteStudent,
-    getStudentsByCourse
+    getStudentsByCourse,
+    getPendingCertificates,
+    getCertificateSummary,
+    updateCertificateStatus
 } from '../controllers/studentController.js';
 
 const router = express.Router();
@@ -19,6 +22,26 @@ router.post('/', createStudent);
 // @desc    Get all students
 // @access  Public
 router.get('/', getAllStudents);
+
+// @route   GET /api/students/pending-certificates
+// @desc    Get students with pending certificates
+// @access  Public
+router.get('/pending-certificates', getPendingCertificates);
+
+// @route   GET /api/students/pending-certificates/summary
+// @desc    Get certificate summary statistics
+// @access  Public
+router.get('/pending-certificates/summary', getCertificateSummary);
+
+// @route   PUT /api/students/pending-certificates/:id/status
+// @desc    Update certificate status
+// @access  Public
+router.put('/pending-certificates/:id/status', updateCertificateStatus);
+
+// @route   GET /api/students/course/:courseId
+// @desc    Get students by course
+// @access  Public
+router.get('/course/:courseId', getStudentsByCourse);
 
 // @route   GET /api/students/:id
 // @desc    Get single student by ID
@@ -34,10 +57,5 @@ router.put('/:id', updateStudent);
 // @desc    Delete student
 // @access  Public
 router.delete('/:id', deleteStudent);
-
-// @route   GET /api/students/course/:courseId
-// @desc    Get students by course
-// @access  Public
-router.get('/course/:courseId', getStudentsByCourse);
 
 export default router;

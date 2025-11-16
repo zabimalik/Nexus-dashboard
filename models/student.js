@@ -45,6 +45,25 @@ const studentSchema = new mongoose.Schema({
             message: 'Status must be either active, completed, or dropped'
         },
         default: 'active'
+    },
+    completionDate: {
+        type: Date
+    },
+    certificateStatus: {
+        type: String,
+        enum: {
+            values: ['not_requested', 'pending', 'under_review', 'certified', 'rejected'],
+            message: 'Certificate status must be one of: not_requested, pending, under_review, certified, rejected'
+        },
+        default: 'not_requested'
+    },
+    certificateRequestDate: {
+        type: Date
+    },
+    certificateRemarks: {
+        type: String,
+        trim: true,
+        maxlength: [500, 'Certificate remarks cannot exceed 500 characters']
     }
 }, {
     timestamps: true
